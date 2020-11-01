@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">NYTimes</string>
+
+    <string name="about_job_text">Android developer</string>
+    <string name="about_job_additional_text">Former QA automation and team lead</string>
+    <string name="about_hobbies_text">Snowboarder</string>
+    <string name="bio_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</string>
+    <string name="input_placeholder">Enter a message…</string>
+    <string name="email_button_text">SEND MESSAGE</string>
+
+    <string name="email_address" translatable="false">alexeysorsa@gmail.com</string>
+    <string name="email_subject">Test subject</string>
+
+    <string name="about_screen">About</string>
+    <string name="about_title">Alexey Zavyalov</string>
+    <string name="about_photo_description">Photo</string>
+    <string name="about_send_email_no_clients_error">Sorry. You don\'t have any email client</string>
+    <string name="about_send_open_app_error">Sorry. You don\'t have an appropriate client</string>
+
+    <string name="telegram_url">https://t.me/azavyalov32</string>
+    <string name="instagram_url">https://www.instagram.com/easyrrrider/</string>
+    <string name="facebook_url">https://web.facebook.com/profile.php?id=100010080007970</string>
+
+    <string name="about_facebook_description">Facebook image</string>
+    <string name="about_instagram_description">Instagram image</string>
+    <string name="about_telegram_description">Telegram image</string>
+
+    <string name="cont_descr_decoration" translatable="false">Decoration</string>
+    <string name="error_message">Loading news was unsuccessful</string>
+    <string name="action_retry">Retry</string>
+
+</resources>

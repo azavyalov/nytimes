@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+
+    <RelativeLayout
+        android:id="@+id/about_main_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/mainImage"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/about_image_height"
+            android:layout_alignParentTop="true"
+            android:contentDescription="@string/about_photo_description"
+            android:scaleType="centerCrop"
+            android:src="@drawable/wake" />
+
+        <ImageView
+            android:id="@+id/job_image"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size"
+            android:layout_below="@id/mainImage"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="@dimen/about_side_padding"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:src="@drawable/android" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/job_image"
+            android:layout_alignBottom="@id/job_image"
+            android:layout_toEndOf="@id/job_image"
+            android:gravity="center_vertical"
+            android:paddingStart="@dimen/spacing_small"
+            android:paddingEnd="@dimen/about_side_padding"
+            android:text="@string/about_job_text"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_normal" />
+
+        <ImageView
+            android:id="@+id/past_job_image"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size"
+            android:layout_below="@id/job_image"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="@dimen/about_side_padding"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:src="@drawable/research" />
+
+        <TextView
+            android:id="@+id/past_job_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/past_job_image"
+            android:layout_gravity="center_vertical"
+            android:layout_toEndOf="@id/past_job_image"
+            android:maxLines="2"
+            android:paddingStart="@dimen/spacing_small"
+            android:paddingEnd="@dimen/about_side_padding"
+            android:text="@string/about_job_additional_text"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_normal" />
+
+        <ImageView
+            android:id="@+id/hobbies_image"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size"
+            android:layout_below="@id/past_job_text"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="@dimen/about_side_padding"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:src="@drawable/snowboard" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/hobbies_image"
+            android:layout_gravity="center_vertical"
+            android:layout_toEndOf="@id/hobbies_image"
+            android:paddingStart="@dimen/spacing_small"
+            android:paddingEnd="@dimen/about_side_padding"
+            android:text="@string/about_hobbies_text"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_normal" />
+
+        <View
+            android:id="@+id/border1"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/border_height"
+            android:layout_below="@id/hobbies_image"
+            android:layout_marginStart="@dimen/about_side_padding"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:layout_marginEnd="@dimen/about_side_padding"
+            android:background="@color/red" />
+
+        <TextView
+            android:id="@+id/bio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/border1"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/about_side_padding"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:layout_marginEnd="@dimen/about_side_padding"
+            android:text="@string/bio_text"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_normal" />
+
+        <View
+            android:id="@+id/border2"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/border_height"
+            android:layout_below="@id/bio"
+            android:layout_marginStart="@dimen/about_side_padding"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:layout_marginEnd="@dimen/about_side_padding"
+            android:background="@color/red" />
+
+        <EditText
+            android:id="@+id/text_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/border2"
+            android:layout_marginStart="@dimen/about_side_padding"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:layout_marginEnd="@dimen/about_side_padding"
+            android:hint="@string/input_placeholder"
+            android:inputType="textMultiLine"
+            android:textColor="@color/white"
+            android:textColorHint="@color/grey"
+            android:textSize="@dimen/text_size_normal" />
+
+        <Button
+            android:id="@+id/send_email_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/text_input"
+            android:layout_gravity="end"
+            android:layout_marginStart="@dimen/about_side_padding"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:layout_marginEnd="@dimen/about_side_padding"
+            android:background="?android:attr/selectableItemBackground"
+            android:text="@string/email_button_text"
+            android:textAlignment="viewEnd"
+            android:textColor="@color/red"
+            android:textSize="@dimen/text_size_normal" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/send_email_button"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:gravity="center_horizontal|bottom"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/telegram_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/black"
+                android:contentDescription="@string/about_telegram_description"
+                android:padding="@dimen/spacing_normal"
+                android:src="@drawable/telegram" />
+
+            <ImageButton
+                android:id="@+id/github_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/black"
+                android:contentDescription="@string/about_facebook_description"
+                android:padding="@dimen/spacing_normal"
+                android:src="@drawable/github" />
+
+            <ImageButton
+                android:id="@+id/instagram_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/black"
+                android:contentDescription="@string/about_instagram_description"
+                android:padding="@dimen/spacing_normal"
+                android:src="@drawable/instagram" />
+
+            <ImageButton
+                android:id="@+id/facebook_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/black"
+                android:contentDescription="@string/about_facebook_description"
+                android:padding="@dimen/spacing_normal"
+                android:src="@drawable/facebook" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</ScrollView>
+
