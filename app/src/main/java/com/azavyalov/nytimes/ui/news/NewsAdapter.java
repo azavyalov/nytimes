@@ -1,4 +1,4 @@
-package com.azavyalov.nytimes.news;
+package com.azavyalov.nytimes.ui.news;
 
 import android.content.Context;
 import android.view.LayoutInflater;

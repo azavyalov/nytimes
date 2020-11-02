@@ -11,15 +11,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar">
-        <activity android:name=".news.NewsListActivity">
+        <activity android:name=".ui.news.NewsListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".details.NewsDetailsActivity"/>
-        <activity android:name=".about.AboutActivity"
+        <activity android:name=".ui.details.NewsDetailsActivity"/>
+        <activity android:name=".ui.about.AboutActivity"
             android:windowSoftInputMode="adjustPan">
         </activity>
     </application>

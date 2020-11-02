@@ -1,4 +1,4 @@
-package com.azavyalov.nytimes.details;
+package com.azavyalov.nytimes.ui.details;
 
 import android.content.Context;
 import android.content.Intent;
@@ -46,7 +46,7 @@ public class NewsDetailsActivity extends AppCompatActivity {
 
         titleView.setText(newsItem.getTitle());
         dateView.setText(Util.formatDateTime(this, newsItem.getPublishDate()));
-        textView.setText(newsItem.getFullText());
+        textView.setText(newsItem.getTextUrl());
     }
 
     public static void start(@NonNull Context context, @NonNull NewsItem newsItem) {
