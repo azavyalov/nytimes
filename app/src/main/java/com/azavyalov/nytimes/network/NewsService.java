@@ -2,7 +2,7 @@ package com.azavyalov.nytimes.network;
 
 import androidx.annotation.NonNull;
 
-import com.azavyalov.nytimes.network.dto.NewsItemsDto;
+import com.azavyalov.nytimes.network.dto.NewsResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -12,5 +12,5 @@ public interface NewsService {
 
     @NonNull
     @GET("/svc/topstories/v2/{category}.json")
-    Call<NewsItemsDto> searchNews(@Path("category") String category);
+    Call<NewsResponse> searchNews(@Path("category") String category);
 }
