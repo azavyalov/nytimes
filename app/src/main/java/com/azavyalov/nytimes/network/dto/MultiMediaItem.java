@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.List;
 
-public class MultiMediaDto implements Serializable {
+public class MultiMediaItem implements Serializable {
 
     @SerializedName("url")
     private String url;
@@ -31,14 +31,14 @@ public class MultiMediaDto implements Serializable {
     }
 
     @Nullable
-    public static String findImage(@Nullable List<MultiMediaDto> multimedias) {
+    public static String findImage(@Nullable List<MultiMediaItem> multimedias) {
 
         if (multimedias == null || multimedias.isEmpty()) {
             return null;
         }
 
         final int maxQualityImage = multimedias.size() - 1;
-        final MultiMediaDto multimedia = multimedias.get(maxQualityImage);
+        final MultiMediaItem multimedia = multimedias.get(maxQualityImage);
 
         if (!multimedia.getType().equals("image")) {
             return null;

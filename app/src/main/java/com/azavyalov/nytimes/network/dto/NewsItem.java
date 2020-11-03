@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.List;
 
-public class NewsItemDto implements Serializable {
+public class NewsItem implements Serializable {
 
     @Nullable
     @SerializedName("section")
@@ -27,7 +27,7 @@ public class NewsItemDto implements Serializable {
 
     @Nullable
     @SerializedName("multimedia")
-    private List<MultiMediaDto> multimedia;
+    private List<MultiMediaItem> multimedia;
 
     @Nullable
     public String getCategory() {
@@ -51,7 +51,7 @@ public class NewsItemDto implements Serializable {
     }
 
     @Nullable
-    public List<MultiMediaDto> getMultimedia() {
+    public List<MultiMediaItem> getMultimedia() {
         return multimedia;
     }
 }

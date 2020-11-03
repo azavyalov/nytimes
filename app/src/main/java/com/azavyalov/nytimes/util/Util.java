@@ -7,10 +7,8 @@ import android.view.View;
 import androidx.annotation.Nullable;
 
 import com.azavyalov.nytimes.BuildConfig;
-import com.azavyalov.nytimes.network.dto.MultiMediaDto;
 
 import java.util.Date;
-import java.util.List;
 
 import io.reactivex.disposables.Disposable;
 
