@@ -40,8 +40,8 @@ public final class RestApi {
         loggingInterceptor.setLevel(BASIC);
 
         return new OkHttpClient.Builder()
-                .addInterceptor(loggingInterceptor)
                 .addInterceptor(ApiKeyInterceptor.create(KEY))
+                .addInterceptor(loggingInterceptor)
                 .connectTimeout(15, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS)

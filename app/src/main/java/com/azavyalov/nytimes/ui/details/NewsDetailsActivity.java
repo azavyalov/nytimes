@@ -12,10 +12,10 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.azavyalov.nytimes.R;
+import com.azavyalov.nytimes.network.dto.MultiMediaDto;
+import com.azavyalov.nytimes.network.dto.NewsItemDto;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
-import com.azavyalov.nytimes.data.NewsItem;
-import com.azavyalov.nytimes.util.Util;
 
 public class NewsDetailsActivity extends AppCompatActivity {
 
@@ -26,12 +26,12 @@ public class NewsDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news_details);
 
-        final NewsItem newsItem = (NewsItem) getIntent().getSerializableExtra(EXTRA_NEWS_ITEM);
+        final NewsItemDto newsItem = (NewsItemDto) getIntent().getSerializableExtra(EXTRA_NEWS_ITEM);
 
         final ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(newsItem.getCategory().getName());
+            actionBar.setTitle(newsItem.getCategory());
         }
 
         final ImageView imageView = findViewById(R.id.news_details_image);
@@ -40,16 +40,16 @@ public class NewsDetailsActivity extends AppCompatActivity {
         final TextView textView = findViewById(R.id.news_details_text);
 
         Glide.with(this)
-                .load(newsItem.getImageUrl())
+                .load(MultiMediaDto.findImage(newsItem.getMultimedia()))
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .into(imageView);
 
         titleView.setText(newsItem.getTitle());
-        dateView.setText(Util.formatDateTime(this, newsItem.getPublishDate()));
-        textView.setText(newsItem.getTextUrl());
+        dateView.setText(newsItem.getPublishedDate());
+        textView.setText(newsItem.getSummary());
     }
 
-    public static void start(@NonNull Context context, @NonNull NewsItem newsItem) {
+    public static void start(@NonNull Context context, @NonNull NewsItemDto newsItem) {
         context.startActivity(new Intent(context, NewsDetailsActivity.class).putExtra(EXTRA_NEWS_ITEM, newsItem));
     }
 

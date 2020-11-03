@@ -5,7 +5,7 @@ import java.util.Date;
 
 public class NewsItem implements Serializable {
 
-    private final String title;
+    /*private final String title;
     private final String imageUrl;
     private final Category category;
     private final Date publishDate;
@@ -44,5 +44,5 @@ public class NewsItem implements Serializable {
 
     public String getTextUrl() {
         return textUrl;
-    }
+    }*/
 }

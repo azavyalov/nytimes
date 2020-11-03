@@ -4,9 +4,10 @@ import androidx.annotation.Nullable;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class NewsItemDto {
+public class NewsItemDto implements Serializable {
 
     @Nullable
     @SerializedName("section")

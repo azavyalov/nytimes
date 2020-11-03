@@ -1,8 +1,13 @@
 package com.azavyalov.nytimes.network.dto;
 
+import androidx.annotation.Nullable;
+
 import com.google.gson.annotations.SerializedName;
 
-public class MultiMediaDto {
+import java.io.Serializable;
+import java.util.List;
+
+public class MultiMediaDto implements Serializable {
 
     @SerializedName("url")
     private String url;
@@ -23,5 +28,22 @@ public class MultiMediaDto {
 
     public String getFormat() {
         return format;
+    }
+
+    @Nullable
+    public static String findImage(@Nullable List<MultiMediaDto> multimedias) {
+
+        if (multimedias == null || multimedias.isEmpty()) {
+            return null;
+        }
+
+        final int maxQualityImage = multimedias.size() - 1;
+        final MultiMediaDto multimedia = multimedias.get(maxQualityImage);
+
+        if (!multimedia.getType().equals("image")) {
+            return null;
+        }
+
+        return multimedia.getUrl();
     }
 }

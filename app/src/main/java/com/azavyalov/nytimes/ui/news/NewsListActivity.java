@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -17,17 +16,19 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.azavyalov.nytimes.R;
+import com.azavyalov.nytimes.network.RestApi;
+import com.azavyalov.nytimes.network.dto.NewsItemDto;
+import com.azavyalov.nytimes.network.dto.NewsItemsDto;
 import com.azavyalov.nytimes.ui.about.AboutActivity;
-import com.azavyalov.nytimes.data.DataUtils;
-import com.azavyalov.nytimes.data.NewsItem;
 import com.azavyalov.nytimes.ui.details.NewsDetailsActivity;
 import com.azavyalov.nytimes.util.Util;
 
 import java.util.List;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 
@@ -58,12 +59,8 @@ public class NewsListActivity extends AppCompatActivity {
         error = findViewById(R.id.layout_error);
         errorAction = findViewById(R.id.action_button);
 
-        adapter = new NewsAdapter(this, DataUtils.generateNews(), new NewsAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(@NonNull NewsItem newsItem) {
-                NewsDetailsActivity.start(NewsListActivity.this, newsItem);
-            }
-        });
+        adapter = new NewsAdapter(this, newsItem ->
+                NewsDetailsActivity.start(NewsListActivity.this, newsItem));
 
         prepareRecycler();
     }
@@ -71,7 +68,7 @@ public class NewsListActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        loadItems();
+        loadNews();
     }
 
     @Override
@@ -106,16 +103,29 @@ public class NewsListActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void loadItems() {
+    private void loadNews() {
         showProgress(true);
 
-        disposable = DataUtils.observeNews()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::updateItems, this::handleError);
+        Call<NewsItemsDto> searchRequest = RestApi.getInstance()
+                .getNewsService()
+                .searchNews("home");
+
+        searchRequest.enqueue(new Callback<NewsItemsDto>() {
+            @Override
+            public void onResponse(Call<NewsItemsDto> call, Response<NewsItemsDto> response) {
+                NewsItemsDto newsItemsDto = response.body();
+                List<NewsItemDto> newsItems = newsItemsDto.getNews();
+                updateItems(newsItems);
+            }
+
+            @Override
+            public void onFailure(Call<NewsItemsDto> call, Throwable t) {
+                handleError(t);
+            }
+        });
     }
 
-    private void updateItems(@Nullable List<NewsItem> newsItems) {
+    private void updateItems(@Nullable List<NewsItemDto> newsItems) {
         if (adapter != null) adapter.replaceItems(newsItems);
 
         Util.setVisible(recycler, true);

@@ -12,18 +12,19 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.azavyalov.nytimes.R;
+import com.azavyalov.nytimes.network.dto.MultiMediaDto;
+import com.azavyalov.nytimes.network.dto.NewsItemDto;
+import com.azavyalov.nytimes.util.Util;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
-import com.azavyalov.nytimes.data.NewsItem;
-import com.azavyalov.nytimes.util.Util;
 
 import java.util.List;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
 
-    private final List<NewsItem> items;
+    private List<NewsItemDto> items;
 
     private final RequestManager imageLoader;
     @NonNull
@@ -31,10 +32,9 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
     @Nullable
     private final OnItemClickListener clickListener;
 
-    public NewsAdapter(@NonNull Context context, List<NewsItem> items, @NonNull OnItemClickListener clickListener) {
+    public NewsAdapter(@NonNull Context context, @NonNull OnItemClickListener clickListener) {
 
         this.inflater = LayoutInflater.from(context);
-        this.items = items;
         this.clickListener = clickListener;
 
         RequestOptions imageOption = new RequestOptions()
@@ -60,14 +60,13 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         return items.size();
     }
 
-    public void replaceItems(@NonNull List<NewsItem> newItems) {
-        items.clear();
-        items.addAll(newItems);
+    public void replaceItems(@NonNull List<NewsItemDto> newsItems) {
+        this.items = newsItems;
         notifyDataSetChanged();
     }
 
     public interface OnItemClickListener {
-        void onItemClick(@NonNull NewsItem newsItem);
+        void onItemClick(@NonNull NewsItemDto newsItem);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -93,15 +92,15 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
             dateView = itemView.findViewById(R.id.news_item_date);
         }
 
-        public void bind(NewsItem newsItem) {
+        public void bind(NewsItemDto newsItem) {
             imageLoader
-                    .load(newsItem.getImageUrl())
+                    .load(MultiMediaDto.findImage(newsItem.getMultimedia()))
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .into(imageView);
-            categoryView.setText(newsItem.getCategory().getName());
+            categoryView.setText(newsItem.getCategory());
             titleView.setText(newsItem.getTitle());
-            previewView.setText(newsItem.getPreviewText());
-            dateView.setText(Util.formatDateTime(dateView.getContext(), newsItem.getPublishDate()));
+            previewView.setText(newsItem.getSummary());
+            dateView.setText(newsItem.getPublishedDate());
         }
     }
 }

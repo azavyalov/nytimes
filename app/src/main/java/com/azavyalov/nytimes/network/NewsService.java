@@ -11,6 +11,6 @@ import retrofit2.http.Path;
 public interface NewsService {
 
     @NonNull
-    @GET("/svc/topstories/v2/{category}/.json")
+    @GET("/svc/topstories/v2/{category}.json")
     Call<NewsItemsDto> searchNews(@Path("category") String category);
 }
