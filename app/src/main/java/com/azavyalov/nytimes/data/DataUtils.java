@@ -15,7 +15,7 @@ import static com.azavyalov.nytimes.util.Util.isDebug;
 
 public class DataUtils {
 
-    private static final String TAG = DataUtils.class.getSimpleName();
+    /*private static final String TAG = DataUtils.class.getSimpleName();
 
     public static List<NewsItem> generateNews() {
 
@@ -162,8 +162,7 @@ public class DataUtils {
         });
     }
 
-
     private static Date createDate(int year, int month, int date, int hrs, int min) {
         return new GregorianCalendar(year, month - 1, date, hrs, min).getTime();
-    }
+    }*/
 }

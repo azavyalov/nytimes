@@ -28,7 +28,7 @@ public final class Util {
         );
     }
 
-    public static void setVisible(@Nullable View view, boolean show) {
+    public static void setVisibility(@Nullable View view, boolean show) {
 
         if (view == null) return;
 

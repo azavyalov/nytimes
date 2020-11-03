@@ -5,20 +5,21 @@ import java.util.Date;
 
 public class NewsItem implements Serializable {
 
-    private final String title;
+    /*private final String title;
     private final String imageUrl;
     private final Category category;
     private final Date publishDate;
     private final String previewText;
-    private final String fullText;
+    private final String textUrl;
 
-    public NewsItem(String title, String imageUrl, Category category, Date publishDate, String previewText, String fullText) {
+    public NewsItem(String title, String imageUrl, Category category, Date publishDate,
+                    String previewText, String textUrl) {
         this.title = title;
         this.imageUrl = imageUrl;
         this.category = category;
         this.publishDate = publishDate;
         this.previewText = previewText;
-        this.fullText = fullText;
+        this.textUrl = textUrl;
     }
 
     public String getTitle() {
@@ -41,7 +42,7 @@ public class NewsItem implements Serializable {
         return previewText;
     }
 
-    public String getFullText() {
-        return fullText;
-    }
+    public String getTextUrl() {
+        return textUrl;
+    }*/
 }

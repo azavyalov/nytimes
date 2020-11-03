@@ -1,4 +1,4 @@
-package com.azavyalov.nytimes.about;
+package com.azavyalov.nytimes.ui.about;
 
 import android.content.Intent;
 import android.net.Uri;

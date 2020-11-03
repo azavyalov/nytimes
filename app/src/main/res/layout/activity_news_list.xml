@@ -16,8 +16,40 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
-        tools:context=".news.NewsListActivity"
+        tools:context=".ui.news.NewsListActivity"
         tools:listitem="@layout/news_item" />
+
+    <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/layout_error"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:contentDescription="@string/cont_descr_decoration"
+            android:src="@drawable/error"
+            app:tint="@color/grey" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:gravity="center"
+            android:text="@string/error_message"
+            android:textColor="@color/grey"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/action_button"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/action_retry" />
+
+    </LinearLayout>
 
 </FrameLayout>
 
