@@ -26,9 +26,9 @@ import com.azavyalov.nytimes.util.Util;
 import java.io.IOException;
 import java.util.List;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import retrofit2.Call;
-import retrofit2.Callback;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Response;
 
 import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
@@ -105,21 +105,12 @@ public class NewsListActivity extends AppCompatActivity {
     private void loadNews() {
         showState(LOADING);
 
-        Call<NewsResponse> searchRequest = RestApi.getInstance()
+        disposable = RestApi.getInstance()
                 .getNewsService()
-                .searchNews("home");
-
-        searchRequest.enqueue(new Callback<NewsResponse>() {
-            @Override
-            public void onResponse(Call<NewsResponse> call, Response<NewsResponse> response) {
-                updateItems(response);
-            }
-
-            @Override
-            public void onFailure(Call<NewsResponse> call, Throwable t) {
-                handleError(t);
-            }
-        });
+                .searchNews("home")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::updateItems, this::handleError);
     }
 
     private void updateItems(@Nullable Response<NewsResponse> response) {

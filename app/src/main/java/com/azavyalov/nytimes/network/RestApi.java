@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import static okhttp3.logging.HttpLoggingInterceptor.Level.BASIC;
@@ -32,6 +33,7 @@ public final class RestApi {
         final Retrofit retrofit = buildRetrofit(okHttpClient, provideGson());
 
         newsService = retrofit.create(NewsService.class);
+        System.out.println("zyaka "+ Thread.currentThread().getName());
     }
 
     private OkHttpClient buildOkHttpClient() {
@@ -53,6 +55,7 @@ public final class RestApi {
                 .baseUrl(URL)
                 .client(okHttp)
                 .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
     }
 
