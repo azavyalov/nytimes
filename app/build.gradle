@@ -35,15 +35,20 @@ dependencies {
     implementation 'com.google.android.material:material:1.2.0'
     implementation 'com.github.bumptech.glide:glide:4.4.0'
 
-    // rx java2
+    // Rx java2
     implementation "io.reactivex.rxjava2:rxjava:2.2.2"
     implementation "io.reactivex.rxjava2:rxandroid:2.1.0"
 
-    // retrofit and okhttp
+    // Retrofit and okhttp
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.9.1'
     implementation "com.squareup.retrofit2:adapter-rxjava2:2.4.0"
+
+    // Room
+    implementation "android.arch.persistence.room:runtime:1.1.1"
+    implementation "android.arch.persistence.room:rxjava2:1.1.1"
+    annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
     
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
