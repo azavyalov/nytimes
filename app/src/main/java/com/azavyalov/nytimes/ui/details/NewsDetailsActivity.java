@@ -15,7 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.azavyalov.nytimes.R;
-import com.azavyalov.nytimes.network.dto.NewsItem;
+import com.azavyalov.nytimes.network.dto.NewsItemDto;
 
 public class NewsDetailsActivity extends AppCompatActivity {
 
@@ -27,7 +27,7 @@ public class NewsDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.news_details_web_view);
 
-        final NewsItem newsItem = (NewsItem) getIntent().getSerializableExtra(EXTRA_NEWS_ITEM);
+        final NewsItemDto newsItem = (NewsItemDto) getIntent().getSerializableExtra(EXTRA_NEWS_ITEM);
         setupWebView(newsItem);
     }
 
@@ -37,13 +37,13 @@ public class NewsDetailsActivity extends AppCompatActivity {
         return true;
     }
 
-    public static void start(@NonNull Context context, @NonNull NewsItem newsItem) {
+    public static void start(@NonNull Context context, @NonNull NewsItemDto newsItem) {
         context.startActivity(new Intent(context, NewsDetailsActivity.class)
                 .putExtra(EXTRA_NEWS_ITEM, newsItem));
     }
 
     @SuppressLint("SetJavaScriptEnabled")
-    private void setupWebView(NewsItem newsItem) {
+    private void setupWebView(NewsItemDto newsItem) {
         mProgressBar = findViewById(R.id.progress_bar);
         mProgressBar.setMax(100);
 

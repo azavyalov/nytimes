@@ -18,7 +18,7 @@ public class MultiMediaItem implements Serializable {
     @SerializedName("format")
     private String format;
 
-    public String getUrl() {
+    public String getImageUrl() {
         return url;
     }
 
@@ -44,6 +44,6 @@ public class MultiMediaItem implements Serializable {
             return null;
         }
 
-        return multimedia.getUrl();
+        return multimedia.getImageUrl();
     }
 }
