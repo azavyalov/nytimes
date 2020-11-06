@@ -12,8 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.azavyalov.nytimes.R;
-import com.azavyalov.nytimes.network.dto.MultiMediaItem;
-import com.azavyalov.nytimes.network.dto.NewsItemDto;
+import com.azavyalov.nytimes.data.NewsItem;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
@@ -23,7 +22,7 @@ import java.util.List;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
 
-    private List<NewsItemDto> items;
+    private List<NewsItem> items;
 
     private final RequestManager imageLoader;
     @NonNull
@@ -59,13 +58,13 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         return items.size();
     }
 
-    public void replaceItems(@NonNull List<NewsItemDto> newsItems) {
+    public void replaceItems(@NonNull List<NewsItem> newsItems) {
         this.items = newsItems;
         notifyDataSetChanged();
     }
 
     public interface OnItemClickListener {
-        void onItemClick(@NonNull NewsItemDto newsItem);
+        void onItemClick(@NonNull NewsItem newsItem);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -91,15 +90,15 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
             dateView = itemView.findViewById(R.id.news_item_date);
         }
 
-        public void bind(NewsItemDto newsItem) {
+        public void bind(NewsItem newsItem) {
             imageLoader
-                    .load(MultiMediaItem.findImage(newsItem.getMultimedia()))
+                    .load(newsItem.getImageUrl())
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .into(imageView);
             categoryView.setText(newsItem.getCategory());
             titleView.setText(newsItem.getTitle());
-            previewView.setText(newsItem.getSummary());
-            dateView.setText(newsItem.getPublishedDate());
+            previewView.setText(newsItem.getPreviewText());
+            dateView.setText(newsItem.getPublishDate());
         }
     }
 }

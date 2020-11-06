@@ -16,8 +16,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.azavyalov.nytimes.R;
+import com.azavyalov.nytimes.data.NewsItem;
 import com.azavyalov.nytimes.network.RestApi;
-import com.azavyalov.nytimes.network.dto.NewsItemDto;
+import com.azavyalov.nytimes.network.dto.ConverterDtoToNewsItem;
 import com.azavyalov.nytimes.network.dto.NewsResponse;
 import com.azavyalov.nytimes.ui.about.AboutActivity;
 import com.azavyalov.nytimes.ui.details.NewsDetailsActivity;
@@ -126,7 +127,7 @@ public class NewsListActivity extends AppCompatActivity {
             return;
         }
 
-        List<NewsItemDto> news = newsResponse.getNews();
+        List<NewsItem> news = ConverterDtoToNewsItem.map(newsResponse.getNews());
         if (news == null || news.isEmpty()) {
             showState(HAS_NO_DATA);
             return;

@@ -1,6 +1,8 @@
 package com.azavyalov.nytimes.data;
 
-public class NewsItem {
+import java.io.Serializable;
+
+public class NewsItem implements Serializable {
 
     private final int id;
     private final String title;
