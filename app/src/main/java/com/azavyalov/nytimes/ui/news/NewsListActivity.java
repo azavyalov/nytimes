@@ -23,6 +23,7 @@ import com.azavyalov.nytimes.network.dto.NewsResponse;
 import com.azavyalov.nytimes.ui.about.AboutActivity;
 import com.azavyalov.nytimes.ui.details.NewsDetailsActivity;
 import com.azavyalov.nytimes.util.Util;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.IOException;
 import java.util.List;
@@ -54,6 +55,8 @@ public class NewsListActivity extends AppCompatActivity {
     private Button errorAction;
     @Nullable
     private Disposable disposable;
+    @Nullable
+    private FloatingActionButton updateAction;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -144,11 +147,13 @@ public class NewsListActivity extends AppCompatActivity {
                 setVisibility(recycler, true);
                 setVisibility(progress, false);
                 setVisibility(error, false);
+                setVisibility(updateAction, true);
                 break;
             case LOADING:
                 setVisibility(progress, true);
                 setVisibility(recycler, false);
                 setVisibility(error, false);
+                setVisibility(updateAction, false);
                 break;
             case HAS_NO_DATA:
             case SERVER_ERROR:
@@ -156,6 +161,7 @@ public class NewsListActivity extends AppCompatActivity {
                 setVisibility(error, true);
                 setVisibility(recycler, false);
                 setVisibility(progress, false);
+                setVisibility(updateAction, true);
                 break;
             default:
                 throw new IllegalArgumentException("Unexpected state: " + state);
@@ -174,7 +180,8 @@ public class NewsListActivity extends AppCompatActivity {
         progress = findViewById(R.id.progress);
         recycler = findViewById(R.id.news_list_recycler);
         error = findViewById(R.id.layout_error);
-        errorAction = findViewById(R.id.action_button);
+        errorAction = findViewById(R.id.error_action_button);
+        updateAction = findViewById(R.id.floating_action_button);
     }
 
     private void setAdapter() {
@@ -198,4 +205,17 @@ public class NewsListActivity extends AppCompatActivity {
     private void prepareRetryButton() {
         errorAction.setOnClickListener(view -> loadNews());
     }
+
+    /*
+    private void setupUpdateButton() {
+        updateAction.setOnClickListener(view -> storeItemsToDb());
+    }
+
+    private void storeItemsToDb() {
+        showState(LOADING);
+        final Disposable disposable = RestApi.getInstance()
+                .getNewsService()
+                .searchNews("home")
+                .map()
+    }*/
 }

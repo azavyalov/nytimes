@@ -27,4 +27,7 @@ public interface NewsDao {
 
     @Delete
     void delete(NewsEntity newsEntity);
+
+    @Query("DELETE FROM NewsItemDB")
+    void deleteAll();
 }
