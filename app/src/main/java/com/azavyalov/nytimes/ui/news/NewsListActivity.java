@@ -2,6 +2,7 @@ package com.azavyalov.nytimes.ui.news;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,27 +19,25 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.azavyalov.nytimes.R;
 import com.azavyalov.nytimes.data.NewsItem;
 import com.azavyalov.nytimes.network.RestApi;
-import com.azavyalov.nytimes.network.dto.ConverterDtoToNewsItem;
-import com.azavyalov.nytimes.network.dto.NewsResponse;
+import com.azavyalov.nytimes.util.ConverterDbToNewsItem;
+import com.azavyalov.nytimes.util.ConverterDtoToDb;
+import com.azavyalov.nytimes.room.NewsItemRepository;
 import com.azavyalov.nytimes.ui.about.AboutActivity;
 import com.azavyalov.nytimes.ui.details.NewsDetailsActivity;
 import com.azavyalov.nytimes.util.Util;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.io.IOException;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import retrofit2.Response;
 
 import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 import static com.azavyalov.nytimes.ui.news.State.HAS_DATA;
 import static com.azavyalov.nytimes.ui.news.State.HAS_NO_DATA;
 import static com.azavyalov.nytimes.ui.news.State.LOADING;
-import static com.azavyalov.nytimes.ui.news.State.NETWORK_ERROR;
-import static com.azavyalov.nytimes.ui.news.State.SERVER_ERROR;
 import static com.azavyalov.nytimes.util.Util.setVisibility;
 
 public class NewsListActivity extends AppCompatActivity {
@@ -54,39 +53,43 @@ public class NewsListActivity extends AppCompatActivity {
     @Nullable
     private Button errorAction;
     @Nullable
-    private Disposable disposable;
-    @Nullable
     private FloatingActionButton updateAction;
+
+    private NewsItemRepository newsItemRepository;
+    private CompositeDisposable compositeDisposable;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news_list);
 
+        newsItemRepository = new NewsItemRepository(getApplicationContext());
+        compositeDisposable = new CompositeDisposable();
+
         findViews();
         setAdapter();
-        prepareRecycler();
-        prepareRetryButton();
+        setupRecycler();
+        setupRetryButton();
+        setupUpdateButton();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        loadNews();
+        storeNewsFromApiToDb();
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-
-        Util.disposeSafe(disposable);
-        disposable = null;
+    protected void onResume() {
+        super.onResume();
+        subscribeToNewsFromDb();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        Util.disposeSafe(compositeDisposable);
+        compositeDisposable = null;
         adapter = null;
         recycler = null;
         progress = null;
@@ -106,37 +109,75 @@ public class NewsListActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void loadNews() {
-        showState(LOADING);
-
-        disposable = RestApi.getInstance()
-                .getNewsService()
-                .searchNews("home")
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::updateItems, this::handleError);
+    private void findViews() {
+        progress = findViewById(R.id.progress);
+        recycler = findViewById(R.id.news_list_recycler);
+        error = findViewById(R.id.error_container);
+        errorAction = findViewById(R.id.error_action_button);
+        updateAction = findViewById(R.id.floating_action_button);
     }
 
-    private void updateItems(@Nullable Response<NewsResponse> response) {
+    private void setAdapter() {
+        adapter = new NewsAdapter(
+                this,
+                newsItem -> NewsDetailsActivity.start(NewsListActivity.this, newsItem));
+    }
 
-        if (!response.isSuccessful()) {
-            showState(SERVER_ERROR);
-            return;
+    private void setupRecycler() {
+        recycler.setAdapter(adapter);
+        recycler.addItemDecoration(new NewsItemDecoration(getResources()
+                .getDimensionPixelSize(R.dimen.spacing_micro)));
+
+        if (getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE) {
+            recycler.setLayoutManager(new GridLayoutManager(
+                    this, getResources().getInteger(R.integer.landscape_news_columns_count)));
+        } else {
+            recycler.setLayoutManager(new LinearLayoutManager(this));
         }
+    }
 
-        NewsResponse newsResponse = response.body();
-        if (newsResponse.getNews() == null) {
-            showState(HAS_NO_DATA);
-            return;
-        }
+    private void setupRetryButton() {
+        errorAction.setOnClickListener(view -> subscribeToNewsFromDb());
+    }
 
-        List<NewsItem> news = ConverterDtoToNewsItem.map(newsResponse.getNews());
+    private void setupUpdateButton() {
+        updateAction.setOnClickListener(view -> storeNewsFromApiToDb());
+    }
+
+    private void storeNewsFromApiToDb() {
+        showState(LOADING);
+        final Disposable disposable = RestApi.getInstance()
+                .getNewsService()
+                .searchNews("home")
+                .map(response -> ConverterDtoToDb.map(response.getNews()))
+                .flatMapCompletable(newsEntities -> newsItemRepository.saveNewsToDb(newsEntities))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> showState(HAS_DATA), throwable -> showState(HAS_NO_DATA));
+        compositeDisposable.add(disposable);
+    }
+
+
+    private void subscribeToNewsFromDb() {
+        showState(LOADING);
+        Disposable disposable = newsItemRepository
+                .getNewsFromDb()
+                .map(newsEntities -> ConverterDbToNewsItem.map(newsEntities))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(newsItems -> updateItems(newsItems),
+                        throwable -> Log.d("Room", throwable.toString()));
+        compositeDisposable.add(disposable);
+    }
+
+    private void updateItems(List<NewsItem> news) {
         if (news == null || news.isEmpty()) {
             showState(HAS_NO_DATA);
             return;
         }
-
-        if (adapter != null) adapter.replaceItems(news);
+        if (adapter != null) {
+            adapter.replaceItems(news);
+        }
         showState(HAS_DATA);
     }
 
@@ -156,8 +197,6 @@ public class NewsListActivity extends AppCompatActivity {
                 setVisibility(updateAction, false);
                 break;
             case HAS_NO_DATA:
-            case SERVER_ERROR:
-            case NETWORK_ERROR:
                 setVisibility(error, true);
                 setVisibility(recycler, false);
                 setVisibility(progress, false);
@@ -167,55 +206,4 @@ public class NewsListActivity extends AppCompatActivity {
                 throw new IllegalArgumentException("Unexpected state: " + state);
         }
     }
-
-    private void handleError(Throwable th) {
-        if (th instanceof IOException) {
-            showState(NETWORK_ERROR);
-            return;
-        }
-        showState(SERVER_ERROR);
-    }
-
-    private void findViews() {
-        progress = findViewById(R.id.progress);
-        recycler = findViewById(R.id.news_list_recycler);
-        error = findViewById(R.id.layout_error);
-        errorAction = findViewById(R.id.error_action_button);
-        updateAction = findViewById(R.id.floating_action_button);
-    }
-
-    private void setAdapter() {
-        adapter = new NewsAdapter(this, newsItem ->
-                NewsDetailsActivity.start(NewsListActivity.this, newsItem));
-    }
-
-    private void prepareRecycler() {
-        recycler.setAdapter(adapter);
-        recycler.addItemDecoration(new NewsItemDecoration(getResources()
-                .getDimensionPixelSize(R.dimen.spacing_micro)));
-
-        if (getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE) {
-            recycler.setLayoutManager(new GridLayoutManager(
-                    this, getResources().getInteger(R.integer.landscape_news_columns_count)));
-        } else {
-            recycler.setLayoutManager(new LinearLayoutManager(this));
-        }
-    }
-
-    private void prepareRetryButton() {
-        errorAction.setOnClickListener(view -> loadNews());
-    }
-
-    /*
-    private void setupUpdateButton() {
-        updateAction.setOnClickListener(view -> storeItemsToDb());
-    }
-
-    private void storeItemsToDb() {
-        showState(LOADING);
-        final Disposable disposable = RestApi.getInstance()
-                .getNewsService()
-                .searchNews("home")
-                .map()
-    }*/
 }

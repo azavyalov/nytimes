@@ -1,13 +1,14 @@
-package com.azavyalov.nytimes.room;
+package com.azavyalov.nytimes.util;
 
 
 import com.azavyalov.nytimes.network.dto.MultiMediaItem;
 import com.azavyalov.nytimes.network.dto.NewsItemDto;
+import com.azavyalov.nytimes.room.NewsEntity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class NewsItemConverterDtoToDb {
+public class ConverterDtoToDb {
 
     public static List<NewsEntity> map(List<NewsItemDto> newsItems) {
 
