@@ -29,5 +29,6 @@
     <string name="error_message">Loading news was unsuccessful</string>
     <string name="action_retry">Retry</string>
     <string name="welcome_text">Welcome!</string>
+    <string name="web_view_text_button">Tap to read full text</string>
 
 </resources>

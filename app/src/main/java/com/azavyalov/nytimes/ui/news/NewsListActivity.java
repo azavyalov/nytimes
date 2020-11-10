@@ -19,11 +19,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.azavyalov.nytimes.R;
 import com.azavyalov.nytimes.data.NewsItem;
 import com.azavyalov.nytimes.network.RestApi;
-import com.azavyalov.nytimes.util.ConverterDbToNewsItem;
-import com.azavyalov.nytimes.util.ConverterDtoToDb;
 import com.azavyalov.nytimes.room.NewsItemRepository;
 import com.azavyalov.nytimes.ui.about.AboutActivity;
 import com.azavyalov.nytimes.ui.details.NewsDetailsActivity;
+import com.azavyalov.nytimes.util.ConverterDbToNewsItem;
+import com.azavyalov.nytimes.util.ConverterDtoToDb;
 import com.azavyalov.nytimes.util.Util;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -156,7 +156,6 @@ public class NewsListActivity extends AppCompatActivity {
                 .subscribe(() -> showState(HAS_DATA), throwable -> showState(HAS_NO_DATA));
         compositeDisposable.add(disposable);
     }
-
 
     private void subscribeToNewsFromDb() {
         showState(LOADING);

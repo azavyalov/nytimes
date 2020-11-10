@@ -17,7 +17,7 @@ public class ConverterDtoToNewsItem {
             newsItems.add(new NewsItem(
                     1,
                     item.getTitle(),
-                    MultiMediaItem.findImage(item.getMultimedia()),
+                    MultiMediaItem.getMaxQualityImageUrl(item.getMultimedia()),
                     item.getCategory(),
                     item.getPublishedDate(),
                     item.getSummary(),

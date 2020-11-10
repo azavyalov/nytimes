@@ -31,19 +31,12 @@ public class MultiMediaItem implements Serializable {
     }
 
     @Nullable
-    public static String findImage(@Nullable List<MultiMediaItem> multimedias) {
+    public static String getMaxQualityImageUrl(@Nullable List<MultiMediaItem> multimedias) {
 
         if (multimedias == null || multimedias.isEmpty()) {
             return null;
         }
-
-        final int maxQualityImage = multimedias.size() - 1;
-        final MultiMediaItem multimedia = multimedias.get(maxQualityImage);
-
-        if (!multimedia.getType().equals("image")) {
-            return null;
-        }
-
+        final MultiMediaItem multimedia = multimedias.get(0);
         return multimedia.getImageUrl();
     }
 }

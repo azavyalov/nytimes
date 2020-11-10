@@ -11,6 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar">
+        <activity android:name=".ui.details.NewsDetailsWebViewActivity" />
         <activity android:name=".ui.details.NewsDetailsActivity" />
         <activity
             android:name=".ui.about.AboutActivity"

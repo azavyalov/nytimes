@@ -17,7 +17,7 @@ public class ConverterDtoToDb {
             newsEntities.add(
                     new NewsEntity(
                             item.getTitle(),
-                            MultiMediaItem.findImage(item.getMultimedia()),
+                            MultiMediaItem.getMaxQualityImageUrl(item.getMultimedia()),
                             item.getCategory(),
                             item.getPublishedDate(),
                             item.getSummary(),
