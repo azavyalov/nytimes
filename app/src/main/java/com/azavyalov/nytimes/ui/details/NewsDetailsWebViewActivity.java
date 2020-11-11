@@ -50,7 +50,6 @@ public class NewsDetailsWebViewActivity extends AppCompatActivity {
         WebView webView = findViewById(R.id.web_view);
         webView.getSettings().setJavaScriptEnabled(true);
         setWebChromeClient(webView);
-
         webView.setWebViewClient(new WebViewClient());
         webView.loadUrl(url);
     }

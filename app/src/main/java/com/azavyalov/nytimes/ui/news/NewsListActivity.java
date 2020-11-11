@@ -58,6 +58,14 @@ public class NewsListActivity extends AppCompatActivity {
     private NewsItemRepository newsItemRepository;
     private CompositeDisposable compositeDisposable;
 
+    private final NewsAdapter.OnItemClickListener clickListener =
+            new NewsAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(@NonNull NewsItem newsItem) {
+                    NewsListActivity.this.openDetailedNewsActivity(newsItem.getId());
+                }
+            };
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +73,8 @@ public class NewsListActivity extends AppCompatActivity {
 
         newsItemRepository = new NewsItemRepository(getApplicationContext());
         compositeDisposable = new CompositeDisposable();
+
+        storeNewsFromApiToDb();
 
         findViews();
         setAdapter();
@@ -76,7 +86,6 @@ public class NewsListActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        storeNewsFromApiToDb();
     }
 
     @Override
@@ -97,7 +106,7 @@ public class NewsListActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_list, menu);
+        getMenuInflater().inflate(R.menu.menu_news_list, menu);
         return true;
     }
 
@@ -118,9 +127,7 @@ public class NewsListActivity extends AppCompatActivity {
     }
 
     private void setAdapter() {
-        adapter = new NewsAdapter(
-                this,
-                newsItem -> NewsDetailsActivity.start(NewsListActivity.this, newsItem));
+        adapter = new NewsAdapter(this, clickListener);
     }
 
     private void setupRecycler() {
@@ -204,5 +211,9 @@ public class NewsListActivity extends AppCompatActivity {
             default:
                 throw new IllegalArgumentException("Unexpected state: " + state);
         }
+    }
+
+    public void openDetailedNewsActivity(int id) {
+        NewsDetailsActivity.start(this, id);
     }
 }

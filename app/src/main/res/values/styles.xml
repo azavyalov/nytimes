@@ -28,5 +28,4 @@
     <style name="TextAppearance.Details.Date" parent="@style/TextAppearance.AppCompat.Small" />
 
     <style name="TextAppearance.Details.Text" parent="@style/TextAppearance.AppCompat.Subhead" />
-
 </resources>

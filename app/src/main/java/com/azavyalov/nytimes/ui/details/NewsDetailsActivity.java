@@ -1,21 +1,29 @@
 package com.azavyalov.nytimes.ui.details;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.azavyalov.nytimes.R;
-import com.azavyalov.nytimes.data.NewsItem;
+import com.azavyalov.nytimes.room.NewsEntity;
+import com.azavyalov.nytimes.room.NewsItemRepository;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class NewsDetailsActivity extends AppCompatActivity {
 
@@ -25,41 +33,54 @@ public class NewsDetailsActivity extends AppCompatActivity {
     private TextView textView;
     private Button webViewButton;
 
-    private static final String EXTRA_NEWS_ITEM = "extra:newsItem";
+    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private NewsItemRepository newsItemRepository;
+    private NewsEntity mNewsEntity;
+    private int newsId;
+
+    private static final String NEWS_ITEM_ID_EXTRA = "extra:newsId";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news_details);
 
-        final NewsItem newsItem = (NewsItem) getIntent().getSerializableExtra(EXTRA_NEWS_ITEM);
-
-        final ActionBar ab = getSupportActionBar();
-        if (ab != null) {
-            ab.setDisplayHomeAsUpEnabled(true);
-            ab.setTitle(newsItem.getCategory());
-        }
-
+        newsItemRepository = new NewsItemRepository(getApplicationContext());
         findViews();
-        setupViews(newsItem);
+        setNewsIdFromExtras();
+        loadNewsItemFromDb(newsId);
     }
 
-    private void setupViews(NewsItem newsItem) {
-        Glide.with(this)
-                .load(newsItem.getImageUrl())
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .into(imageView);
-
-        titleView.setText(newsItem.getTitle());
-        textView.setText(newsItem.getPreviewText());
-        dateView.setText(newsItem.getPublishDate());
-        webViewButton.setOnClickListener(view -> {
-            openWebViewActivity(newsItem.getTextUrl());
-        });
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
-    private void openWebViewActivity(String newsUrl) {
-        NewsDetailsWebViewActivity.start(this, newsUrl);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_news_details, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.delete_button) {
+            deleteNews(mNewsEntity);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void deleteNews(NewsEntity newsEntity) {
+        if (newsEntity != null) {
+            Disposable disposable = newsItemRepository
+                    .deleteNews(newsEntity)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe();
+            compositeDisposable.add(disposable);
+            finish();
+        }
     }
 
     private void findViews() {
@@ -70,13 +91,48 @@ public class NewsDetailsActivity extends AppCompatActivity {
         webViewButton = findViewById(R.id.open_in_web_view_button);
     }
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
+    private void setNewsIdFromExtras() {
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            newsId = bundle.getInt(NEWS_ITEM_ID_EXTRA);
+        }
     }
 
-    public static void start(@NonNull Context context, @NonNull NewsItem newsItem) {
-        context.startActivity(new Intent(context, NewsDetailsActivity.class).putExtra(EXTRA_NEWS_ITEM, newsItem));
+    private void loadNewsItemFromDb(int id) {
+        Disposable disposable = newsItemRepository
+                .getNewsById(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(newsEntity -> {
+                    mNewsEntity = newsEntity;
+                    return mNewsEntity;
+                })
+                .subscribe(newsEntity -> NewsDetailsActivity.this.setupViews(newsEntity),
+                        throwable -> Log.d("Room", throwable.toString()));
+        compositeDisposable.add(disposable);
+    }
+
+    private void setupViews(NewsEntity newsEntity) {
+        Glide.with(this)
+                .load(newsEntity.getImageUrl())
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .into(imageView);
+
+        titleView.setText(newsEntity.getTitle());
+        textView.setText(newsEntity.getPreviewText());
+        dateView.setText(newsEntity.getPublishDate());
+        webViewButton.setOnClickListener(view -> {
+            openWebViewActivity(newsEntity.getTextUrl());
+        });
+    }
+
+    private void openWebViewActivity(String newsUrl) {
+        NewsDetailsWebViewActivity.start(this, newsUrl);
+    }
+
+    public static void start(@NonNull Activity activity, @NonNull int id) {
+        Intent intent = new Intent(activity, NewsDetailsActivity.class);
+        intent.putExtra(NEWS_ITEM_ID_EXTRA, id);
+        activity.startActivity(intent);
     }
 }
