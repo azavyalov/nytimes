@@ -1,7 +1,6 @@
-package com.azavyalov.nytimes.util;
+package com.azavyalov.nytimes.room;
 
 import com.azavyalov.nytimes.data.NewsItem;
-import com.azavyalov.nytimes.room.NewsEntity;
 
 import java.util.ArrayList;
 import java.util.List;

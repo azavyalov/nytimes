@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.azavyalov.nytimes.R;
 import com.azavyalov.nytimes.room.NewsEntity;
 import com.azavyalov.nytimes.room.NewsItemRepository;
+import com.azavyalov.nytimes.util.Util;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 
@@ -33,7 +34,7 @@ public class NewsDetailsActivity extends AppCompatActivity {
     private TextView textView;
     private Button webViewButton;
 
-    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private NewsItemRepository newsItemRepository;
     private NewsEntity mNewsEntity;
     private int newsId;
@@ -43,12 +44,19 @@ public class NewsDetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("NewsDetailsTag", "Call onCreate");
         setContentView(R.layout.activity_news_details);
 
         newsItemRepository = new NewsItemRepository(getApplicationContext());
         findViews();
         setNewsIdFromExtras();
         loadNewsItemFromDb(newsId);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Util.disposeSafe(compositeDisposable);
     }
 
     @Override

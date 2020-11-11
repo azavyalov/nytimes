@@ -22,8 +22,8 @@ import com.azavyalov.nytimes.network.RestApi;
 import com.azavyalov.nytimes.room.NewsItemRepository;
 import com.azavyalov.nytimes.ui.about.AboutActivity;
 import com.azavyalov.nytimes.ui.details.NewsDetailsActivity;
-import com.azavyalov.nytimes.util.ConverterDbToNewsItem;
-import com.azavyalov.nytimes.util.ConverterDtoToDb;
+import com.azavyalov.nytimes.room.ConverterDbToNewsItem;
+import com.azavyalov.nytimes.room.ConverterDtoToDb;
 import com.azavyalov.nytimes.util.Util;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -69,6 +69,7 @@ public class NewsListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("NewsListTag", "Call onCreate");
         setContentView(R.layout.activity_news_list);
 
         newsItemRepository = new NewsItemRepository(getApplicationContext());
@@ -86,16 +87,31 @@ public class NewsListActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        Log.d("NewsListTag", "Call onStart");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d("NewsListTag", "Call onResume");
         subscribeToNewsFromDb();
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d("NewsListTag", "Call onStop");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d("NewsListTag", "Call onPause");
+    }
+
+    @Override
     protected void onDestroy() {
+        Log.d("NewsListTag", "Call onDestroy");
         super.onDestroy();
         Util.disposeSafe(compositeDisposable);
         compositeDisposable = null;
@@ -153,6 +169,7 @@ public class NewsListActivity extends AppCompatActivity {
 
     private void storeNewsFromApiToDb() {
         showState(LOADING);
+        Log.d("NewsListTag", "Store news from API to DB");
         final Disposable disposable = RestApi.getInstance()
                 .getNewsService()
                 .searchNews("home")
@@ -166,6 +183,7 @@ public class NewsListActivity extends AppCompatActivity {
 
     private void subscribeToNewsFromDb() {
         showState(LOADING);
+        Log.d("NewsListTag", "Subscribe to news from DB");
         Disposable disposable = newsItemRepository
                 .getNewsFromDb()
                 .map(newsEntities -> ConverterDbToNewsItem.map(newsEntities))

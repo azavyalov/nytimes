@@ -1,4 +1,4 @@
-package com.azavyalov.nytimes.util;
+package com.azavyalov.nytimes.room;
 
 
 import com.azavyalov.nytimes.network.dto.MultiMediaItem;

@@ -49,7 +49,11 @@ public class NewsItemRepository {
         return Completable.fromAction(() -> {
             AppDatabase database = AppDatabase.getInstance(mContext);
             database.newsDao().delete(newsEntity);
-            Log.d("Room", "News with id: " + newsEntity.getId() + "has deleted from DB");
+            Log.d("Room", "News has been deleted from DB." +
+                    " Id: "
+                    + newsEntity.getId()
+                    + " Title: "
+                    + newsEntity.getTitle());
         });
     }
 }

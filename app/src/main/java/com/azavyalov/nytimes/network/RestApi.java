@@ -33,7 +33,6 @@ public final class RestApi {
         final Retrofit retrofit = buildRetrofit(okHttpClient, provideGson());
 
         newsService = retrofit.create(NewsService.class);
-        System.out.println("zyaka "+ Thread.currentThread().getName());
     }
 
     private OkHttpClient buildOkHttpClient() {
