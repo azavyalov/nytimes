@@ -48,6 +48,15 @@
             android:lineSpacingExtra="4sp"
             android:textAppearance="@style/TextAppearance.Details.Text"
             tools:text="@tools:sample/lorem/random" />
+
+        <Button
+            android:id="@+id/open_in_web_view_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_normal"
+            android:layout_marginTop="@dimen/spacing_micro"
+            android:layout_marginEnd="@dimen/spacing_normal"
+            android:text="@string/web_view_text_button" />
     </LinearLayout>
 
 </ScrollView>

@@ -28,5 +28,8 @@
     <string name="cont_descr_decoration" translatable="false">Decoration</string>
     <string name="error_message">Loading news was unsuccessful</string>
     <string name="action_retry">Retry</string>
+    <string name="welcome_text">Welcome!</string>
+    <string name="web_view_text_button">Tap to read full text</string>
+    <string name="delete_news_button_text">Delete</string>
 
 </resources>

@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.List;
 
-public class NewsItem implements Serializable {
+public class NewsItemDto implements Serializable {
 
     @Nullable
     @SerializedName("section")

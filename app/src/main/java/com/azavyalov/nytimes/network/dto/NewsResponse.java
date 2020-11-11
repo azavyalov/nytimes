@@ -10,13 +10,13 @@ public class NewsResponse {
     private String status;
 
     @SerializedName("results")
-    private List<NewsItem> news;
+    private List<NewsItemDto> news;
 
     public String getStatus() {
         return status;
     }
 
-    public List<NewsItem> getNews() {
+    public List<NewsItemDto> getNews() {
         return news;
     }
 }

@@ -13,5 +13,5 @@ public interface NewsService {
 
     @NonNull
     @GET("/svc/topstories/v2/{category}.json")
-    Single<Response<NewsResponse>> searchNews(@Path("category") String category);
+    Single<NewsResponse> searchNews(@Path("category") String category);
 }
