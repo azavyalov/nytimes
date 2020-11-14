@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/spacing_normal"
-        tools:showIn="@layout/activity_news_list">
+        tools:showIn="@layout/news_list_fragment">
 
         <TextView
             android:id="@+id/news_item_category"

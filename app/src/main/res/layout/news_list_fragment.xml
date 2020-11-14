@@ -16,7 +16,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
-        tools:context=".ui.news.NewsListActivity"
         tools:listitem="@layout/news_item" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

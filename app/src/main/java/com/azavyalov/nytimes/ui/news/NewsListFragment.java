@@ -1,17 +1,16 @@
 package com.azavyalov.nytimes.ui.news;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,12 +18,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.azavyalov.nytimes.R;
 import com.azavyalov.nytimes.data.NewsItem;
 import com.azavyalov.nytimes.network.RestApi;
-import com.azavyalov.nytimes.room.NewsItemRepository;
-import com.azavyalov.nytimes.ui.about.AboutActivity;
-import com.azavyalov.nytimes.ui.details.NewsDetailsActivity;
 import com.azavyalov.nytimes.room.ConverterDbToNewsItem;
 import com.azavyalov.nytimes.room.ConverterDtoToDb;
-import com.azavyalov.nytimes.util.Util;
+import com.azavyalov.nytimes.room.NewsItemRepository;
+import com.azavyalov.nytimes.ui.details.NewsDetailsFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
@@ -38,9 +35,10 @@ import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 import static com.azavyalov.nytimes.ui.news.State.HAS_DATA;
 import static com.azavyalov.nytimes.ui.news.State.HAS_NO_DATA;
 import static com.azavyalov.nytimes.ui.news.State.LOADING;
+import static com.azavyalov.nytimes.util.Util.disposeSafe;
 import static com.azavyalov.nytimes.util.Util.setVisibility;
 
-public class NewsListActivity extends AppCompatActivity {
+public class NewsListFragment extends Fragment {
 
     @Nullable
     private RecyclerView recycler;
@@ -58,104 +56,78 @@ public class NewsListActivity extends AppCompatActivity {
     private NewsItemRepository newsItemRepository;
     private CompositeDisposable compositeDisposable;
 
+    private static final String TAG_NEWS_DETAIL_FRAGMENT = "news_detail_fragment";
     private final NewsAdapter.OnItemClickListener clickListener =
-            new NewsAdapter.OnItemClickListener() {
-                @Override
-                public void onItemClick(@NonNull NewsItem newsItem) {
-                    NewsListActivity.this.openDetailedNewsActivity(newsItem.getId());
-                }
-            };
+            newsItem -> NewsListFragment.this.openNewsDetailsFragment(newsItem.getId());
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d("NewsListTag", "Call onCreate");
-        setContentView(R.layout.activity_news_list);
-
-        newsItemRepository = new NewsItemRepository(getApplicationContext());
         compositeDisposable = new CompositeDisposable();
+        newsItemRepository = new NewsItemRepository(getActivity());
 
         storeNewsFromApiToDb();
+    }
 
-        findViews();
-        setAdapter();
-        setupRecycler();
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        Log.d("NewsListTag", "Call onCreateView");
+        View view = inflater.inflate(R.layout.news_list_fragment, container, false);
+
+        findViews(view);
+        setupRecycler(view);
         setupRetryButton();
         setupUpdateButton();
+        return view;
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        Log.d("NewsListTag", "Call onStart");
-    }
-
-    @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         Log.d("NewsListTag", "Call onResume");
         subscribeToNewsFromDb();
     }
 
     @Override
-    protected void onStop() {
+    public void onStop() {
         super.onStop();
         Log.d("NewsListTag", "Call onStop");
+        compositeDisposable.clear();
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        Log.d("NewsListTag", "Call onPause");
-    }
-
-    @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         Log.d("NewsListTag", "Call onDestroy");
         super.onDestroy();
-        Util.disposeSafe(compositeDisposable);
-        compositeDisposable = null;
-        adapter = null;
-        recycler = null;
-        progress = null;
+        disposeSafe(compositeDisposable);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_news_list, menu);
-        return true;
+    public static NewsListFragment newInstance() {
+        return new NewsListFragment();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.about_activity) {
-            startActivity(new Intent(this, AboutActivity.class));
-        }
-        return super.onOptionsItemSelected(item);
+    private void findViews(View view) {
+        progress = view.findViewById(R.id.progress);
+        recycler = view.findViewById(R.id.news_list_recycler);
+        error = view.findViewById(R.id.error_container);
+        errorAction = view.findViewById(R.id.error_action_button);
+        updateAction = view.findViewById(R.id.floating_action_button);
     }
 
-    private void findViews() {
-        progress = findViewById(R.id.progress);
-        recycler = findViewById(R.id.news_list_recycler);
-        error = findViewById(R.id.error_container);
-        errorAction = findViewById(R.id.error_action_button);
-        updateAction = findViewById(R.id.floating_action_button);
-    }
-
-    private void setAdapter() {
-        adapter = new NewsAdapter(this, clickListener);
-    }
-
-    private void setupRecycler() {
+    private void setupRecycler(View view) {
+        adapter = new NewsAdapter(view.getContext(), clickListener);
         recycler.setAdapter(adapter);
         recycler.addItemDecoration(new NewsItemDecoration(getResources()
                 .getDimensionPixelSize(R.dimen.spacing_micro)));
 
         if (getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE) {
             recycler.setLayoutManager(new GridLayoutManager(
-                    this, getResources().getInteger(R.integer.landscape_news_columns_count)));
+                    getActivity(), getResources().getInteger(R.integer.landscape_news_columns_count)));
         } else {
-            recycler.setLayoutManager(new LinearLayoutManager(this));
+            recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
         }
     }
 
@@ -170,7 +142,7 @@ public class NewsListActivity extends AppCompatActivity {
     private void storeNewsFromApiToDb() {
         showState(LOADING);
         Log.d("NewsListTag", "Store news from API to DB");
-        final Disposable disposable = RestApi.getInstance()
+        Disposable disposable = RestApi.getInstance()
                 .getNewsService()
                 .searchNews("home")
                 .map(response -> ConverterDtoToDb.map(response.getNews()))
@@ -231,7 +203,14 @@ public class NewsListActivity extends AppCompatActivity {
         }
     }
 
-    public void openDetailedNewsActivity(int id) {
-        NewsDetailsActivity.start(this, id);
+    public void openNewsDetailsFragment(int id) {
+        NewsDetailsFragment detailsFragment = NewsDetailsFragment.newInstance(id);
+        if (getFragmentManager() != null) {
+            getFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.main_frame, detailsFragment, TAG_NEWS_DETAIL_FRAGMENT)
+                    .addToBackStack(TAG_NEWS_DETAIL_FRAGMENT)
+                    .commit();
+        }
     }
 }

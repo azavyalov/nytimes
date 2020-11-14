@@ -8,7 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.azavyalov.nytimes.R;
-import com.azavyalov.nytimes.ui.news.NewsListActivity;
+import com.azavyalov.nytimes.ui.MainActivity;
 
 import java.util.concurrent.TimeUnit;
 
@@ -66,7 +66,6 @@ public class IntroActivity extends AppCompatActivity {
     }
 
     private void startNewsListActivity() {
-        startActivity(new Intent(this, NewsListActivity.class));
+        startActivity(new Intent(this, MainActivity.class));
     }
-
 }
