@@ -29,9 +29,7 @@ public final class Util {
     }
 
     public static void setVisibility(@Nullable View view, boolean show) {
-
         if (view == null) return;
-
         int visibility = show ? View.VISIBLE : View.GONE;
         view.setVisibility(visibility);
     }
@@ -40,9 +38,5 @@ public final class Util {
         if (disposable != null && !disposable.isDisposed()) {
             disposable.dispose();
         }
-    }
-
-    public static boolean isDebug() {
-        return BuildConfig.DEBUG;
     }
 }
