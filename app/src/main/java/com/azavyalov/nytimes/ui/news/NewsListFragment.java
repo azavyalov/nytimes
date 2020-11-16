@@ -11,7 +11,6 @@ import android.widget.ProgressBar;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,7 +20,8 @@ import com.azavyalov.nytimes.network.RestApi;
 import com.azavyalov.nytimes.room.ConverterDbToNewsItem;
 import com.azavyalov.nytimes.room.ConverterDtoToDb;
 import com.azavyalov.nytimes.room.NewsItemRepository;
-import com.azavyalov.nytimes.ui.details.NewsDetailsFragment;
+import com.azavyalov.nytimes.ui.FragmentActionListener;
+import com.azavyalov.nytimes.ui.MainActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
@@ -31,7 +31,6 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 import static com.azavyalov.nytimes.ui.news.State.HAS_DATA;
 import static com.azavyalov.nytimes.ui.news.State.HAS_NO_DATA;
 import static com.azavyalov.nytimes.ui.news.State.LOADING;
@@ -56,9 +55,16 @@ public class NewsListFragment extends Fragment {
     private NewsItemRepository newsItemRepository;
     private CompositeDisposable compositeDisposable;
 
-    private static final String TAG_NEWS_DETAIL_FRAGMENT = "news_detail_fragment";
+    private FragmentActionListener fragmentActionListener;
     private final NewsAdapter.OnItemClickListener clickListener =
-            newsItem -> NewsListFragment.this.openNewsDetailsFragment(newsItem.getId());
+            new NewsAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(@NonNull NewsItem newsItem) {
+                    if (fragmentActionListener != null) {
+                        fragmentActionListener.onNewsSelected(newsItem);
+                    }
+                }
+            };
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -105,6 +111,12 @@ public class NewsListFragment extends Fragment {
         disposeSafe(compositeDisposable);
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        fragmentActionListener = (MainActivity) getActivity();
+    }
+
     public static NewsListFragment newInstance() {
         return new NewsListFragment();
     }
@@ -122,13 +134,7 @@ public class NewsListFragment extends Fragment {
         recycler.setAdapter(adapter);
         recycler.addItemDecoration(new NewsItemDecoration(getResources()
                 .getDimensionPixelSize(R.dimen.spacing_micro)));
-
-        if (getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE) {
-            recycler.setLayoutManager(new GridLayoutManager(
-                    getActivity(), getResources().getInteger(R.integer.landscape_news_columns_count)));
-        } else {
-            recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
-        }
+        recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
     private void setupRetryButton() {
@@ -203,14 +209,7 @@ public class NewsListFragment extends Fragment {
         }
     }
 
-    public void openNewsDetailsFragment(int id) {
-        NewsDetailsFragment detailsFragment = NewsDetailsFragment.newInstance(id);
-        if (getFragmentManager() != null) {
-            getFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.main_frame, detailsFragment, TAG_NEWS_DETAIL_FRAGMENT)
-                    .addToBackStack(TAG_NEWS_DETAIL_FRAGMENT)
-                    .commit();
-        }
+    public void setFragmentActionListener(FragmentActionListener fragmentActionListener) {
+        this.fragmentActionListener = fragmentActionListener;
     }
 }
