@@ -71,6 +71,8 @@ public class MainActivity extends AppCompatActivity implements FragmentActionLis
         int frameId = isTwoPanel ? R.id.details_container : R.id.list_container;
         getSupportFragmentManager()
                 .beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left,
+                        R.anim.slide_in_left, R.anim.slide_out_right)
                 .replace(frameId, detailsFragment, TAG_NEWS_DETAIL_FRAGMENT)
                 .addToBackStack(TAG_NEWS_DETAIL_FRAGMENT)
                 .commit();
