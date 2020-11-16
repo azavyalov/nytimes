@@ -23,6 +23,7 @@ import com.azavyalov.nytimes.room.NewsItemRepository;
 import com.azavyalov.nytimes.util.Util;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -36,6 +37,7 @@ public class NewsDetailsFragment extends Fragment {
     private TextView dateView;
     private TextView textView;
     private Button webViewButton;
+    private FloatingActionButton deleteButton;
 
     private Activity activity;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
@@ -89,26 +91,13 @@ public class NewsDetailsFragment extends Fragment {
         Util.disposeSafe(compositeDisposable);
     }
 
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_news_details, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.delete_button) {
-            deleteNews(mNewsEntity);
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     private void findViews(View view) {
         imageView = view.findViewById(R.id.news_details_image);
         titleView = view.findViewById(R.id.news_details_title);
         dateView = view.findViewById(R.id.news_details_date);
         textView = view.findViewById(R.id.news_details_text);
         webViewButton = view.findViewById(R.id.open_in_web_view_button);
+        deleteButton = view.findViewById(R.id.delete_news_button);
     }
 
     private void loadNewsItemFromDb(int id) {
@@ -137,6 +126,9 @@ public class NewsDetailsFragment extends Fragment {
         dateView.setText(newsEntity.getPublishDate());
         webViewButton.setOnClickListener(view -> {
             openWebViewActivity(newsEntity.getTextUrl());
+        });
+        deleteButton.setOnClickListener(view -> {
+            deleteNews(mNewsEntity);
         });
     }
 
