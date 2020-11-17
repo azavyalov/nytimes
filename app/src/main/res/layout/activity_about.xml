@@ -109,7 +109,7 @@
             android:layout_marginEnd="@dimen/about_side_padding"
             android:text="@string/bio_text"
             android:textColor="@color/white"
-            android:textSize="@dimen/text_size_normal" />
+            android:textSize="@dimen/spacing_normal" />
 
         <View
             android:id="@+id/border2"
@@ -127,7 +127,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/border2"
             android:layout_marginStart="@dimen/about_side_padding"
-            android:layout_marginTop="@dimen/spacing_normal"
+            android:layout_marginTop="@dimen/spacing_small"
             android:layout_marginEnd="@dimen/about_side_padding"
             android:hint="@string/input_placeholder"
             android:inputType="textMultiLine"
@@ -142,7 +142,6 @@
             android:layout_below="@id/text_input"
             android:layout_gravity="end"
             android:layout_marginStart="@dimen/about_side_padding"
-            android:layout_marginTop="@dimen/spacing_small"
             android:layout_marginEnd="@dimen/about_side_padding"
             android:background="?android:attr/selectableItemBackground"
             android:text="@string/email_button_text"
@@ -154,9 +153,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/send_email_button"
-            android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginTop="@dimen/spacing_normal"
             android:gravity="center_horizontal|bottom"
             android:orientation="horizontal">
 

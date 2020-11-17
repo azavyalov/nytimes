@@ -9,9 +9,10 @@
 
     <dimen name="news_details_image_height">260dp</dimen>
 
-    <dimen name="about_image_height">232dp</dimen>
+    <dimen name="about_image_height">200dp</dimen>
     <dimen name="icon_size">28dp</dimen>
     <dimen name="about_side_padding">50dp</dimen>
     <dimen name="text_size_normal">16sp</dimen>
+    <dimen name="text_size_small">12sp</dimen>
     <dimen name="border_height">1dp</dimen>
 </resources>
