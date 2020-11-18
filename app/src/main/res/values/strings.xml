@@ -32,4 +32,8 @@
     <string name="web_view_text_button">Tap to read full text</string>
     <string name="delete_news_button_text">Delete</string>
 
+    <string name="channel_name">News channel name</string>
+    <string name="channel_description">News updating</string>
+    <string name="notification_success_text">News updating: done</string>
+
 </resources>

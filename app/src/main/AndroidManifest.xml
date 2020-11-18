@@ -3,6 +3,7 @@
     package="com.azavyalov.nytimes">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:allowBackup="true"
@@ -11,8 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar">
-        <activity android:name=".ui.MainActivity">
-        </activity>
+        <activity android:name=".ui.MainActivity" />
         <activity android:name=".ui.details.NewsDetailsWebViewActivity" />
         <activity
             android:name=".ui.about.AboutActivity"
@@ -25,6 +25,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".service.NewsUpdateService"
+            android:exported="false" />
+
+        <receiver
+            android:name=".service.CancelNewsUpdateService"
+            android:enabled="true"
+            android:process=":remote" />
     </application>
 
 </manifest>
