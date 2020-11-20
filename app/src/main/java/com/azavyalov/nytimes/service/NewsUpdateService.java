@@ -13,13 +13,13 @@ import com.azavyalov.nytimes.R;
 import com.azavyalov.nytimes.network.RestApi;
 import com.azavyalov.nytimes.room.ConverterDtoToDb;
 import com.azavyalov.nytimes.room.NewsItemRepository;
-import com.azavyalov.nytimes.service.notification.NotificationBuilder;
+import com.azavyalov.nytimes.service.notification.ForegroundNotification;
+import com.azavyalov.nytimes.service.notification.ResultNotification;
 
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.azavyalov.nytimes.network.NewsCategories.HOME;
 import static com.azavyalov.nytimes.util.VersionUtils.atLeastNougat;
 import static com.azavyalov.nytimes.util.VersionUtils.atLeastOreo;
 
@@ -40,7 +40,7 @@ public class NewsUpdateService extends Service {
     public void onCreate() {
         super.onCreate();
         Log.d(LOG_TAG, "onCreate");
-        Notification notification = NotificationBuilder.createForegroundNotification(this);
+        Notification notification = new ForegroundNotification(this).create();
         startForeground(1, notification);
         newsRepository = new NewsItemRepository(this.getApplicationContext());
     }
@@ -48,33 +48,7 @@ public class NewsUpdateService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(LOG_TAG, "onStartCommand");
-
-        if (atLeastNougat()) {
-            downloadDisposable = RestApi.getInstance()
-                    .getNewsService()
-                    .searchNews("home") // TODO create enum
-                    .map(response -> ConverterDtoToDb.map(response.getNews()))
-                    .flatMapCompletable(newsEntities -> newsRepository.saveNewsToDb(newsEntities))
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(Schedulers.io())
-                    .subscribe(new Action() {
-                        @Override
-                        public void run() throws Exception {
-                            NotificationBuilder.showResultNotification(NewsUpdateService.this,
-                                    NewsUpdateService.this.getString(R.string.notification_success_text));
-                            NewsUpdateService.this.stopSelf();
-                        }
-                    }, new Consumer<Throwable>() {
-                        @Override
-                        public void accept(Throwable throwable) throws Exception {
-                            NotificationBuilder.showResultNotification(NewsUpdateService.this,
-                                    throwable.getClass().getSimpleName());
-                            NewsUpdateService.this.stopSelf();
-                        }
-                    });
-        } else {
-            NewsUpdateService.this.stopSelf();
-        }
+        downloadNews();
         return START_STICKY;
     }
 
@@ -83,6 +57,32 @@ public class NewsUpdateService extends Service {
         Log.d(LOG_TAG, "onDestroy");
         if (downloadDisposable != null && !downloadDisposable.isDisposed()) {
             downloadDisposable.dispose();
+        }
+    }
+
+    private void downloadNews() {
+        if (atLeastNougat()) {
+            downloadDisposable = RestApi.getInstance()
+                    .getNewsService()
+                    .searchNews(HOME.toString())
+                    .map(response -> ConverterDtoToDb.map(response.getNews()))
+                    .flatMapCompletable(newsEntities -> newsRepository.saveNewsToDb(newsEntities))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(Schedulers.io())
+                    .subscribe(() -> {
+                        ResultNotification notification = new ResultNotification(
+                                NewsUpdateService.this);
+                        notification.show(NewsUpdateService.this.getString(
+                                R.string.notification_success_text));
+                        NewsUpdateService.this.stopSelf();
+                    }, throwable -> {
+                        ResultNotification notification = new ResultNotification(
+                                NewsUpdateService.this);
+                        notification.show(throwable.getClass().getSimpleName());
+                        NewsUpdateService.this.stopSelf();
+                    });
+        } else {
+            NewsUpdateService.this.stopSelf();
         }
     }
 

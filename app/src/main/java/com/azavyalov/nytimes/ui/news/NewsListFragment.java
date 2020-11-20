@@ -31,6 +31,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.azavyalov.nytimes.network.NewsCategories.HOME;
 import static com.azavyalov.nytimes.ui.news.State.HAS_DATA;
 import static com.azavyalov.nytimes.ui.news.State.HAS_NO_DATA;
 import static com.azavyalov.nytimes.ui.news.State.LOADING;
@@ -72,8 +73,6 @@ public class NewsListFragment extends Fragment {
         Log.d("NewsListTag", "Call onCreate");
         compositeDisposable = new CompositeDisposable();
         newsItemRepository = new NewsItemRepository(getActivity());
-
-        /*storeNewsFromApiToDb();*/
     }
 
     @Nullable
@@ -150,7 +149,7 @@ public class NewsListFragment extends Fragment {
         Log.d("NewsListTag", "Store news from API to DB");
         Disposable disposable = RestApi.getInstance()
                 .getNewsService()
-                .searchNews("home")
+                .searchNews(HOME.toString())
                 .map(response -> ConverterDtoToDb.map(response.getNews()))
                 .flatMapCompletable(newsEntities -> newsItemRepository.saveNewsToDb(newsEntities))
                 .subscribeOn(Schedulers.io())
