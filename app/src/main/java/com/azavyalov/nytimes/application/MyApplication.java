@@ -25,7 +25,7 @@ public class MyApplication extends Application {
                 .build();*/
 
         PeriodicWorkRequest workRequest = new PeriodicWorkRequest.Builder(NewsUpdateWork.class,
-                15, TimeUnit.MINUTES)
+                3, TimeUnit.HOURS)
                 //.setConstraints(constraints)
                 .build();
 
