@@ -3,10 +3,13 @@
     package="com.azavyalov.nytimes">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
+        android:name=".application.MyApplication"
         android:allowBackup="true"
+        android:fullBackupContent="true"
         android:icon="@drawable/helmet"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -31,7 +34,7 @@
             android:exported="false" />
 
         <receiver
-            android:name=".service.CancelNewsUpdateService"
+            android:name=".service.StopNewsUpdateService"
             android:enabled="true"
             android:process=":remote" />
     </application>

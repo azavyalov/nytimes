@@ -5,6 +5,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -12,8 +13,7 @@ import com.azavyalov.nytimes.R;
 import com.azavyalov.nytimes.network.RestApi;
 import com.azavyalov.nytimes.room.ConverterDtoToDb;
 import com.azavyalov.nytimes.room.NewsItemRepository;
-import com.azavyalov.nytimes.service.notification.ForegroundNotificationBuilder;
-import com.azavyalov.nytimes.service.notification.ResultNotificationBuilder;
+import com.azavyalov.nytimes.service.notification.NotificationBuilder;
 
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
@@ -25,61 +25,62 @@ import static com.azavyalov.nytimes.util.VersionUtils.atLeastOreo;
 
 public class NewsUpdateService extends Service {
 
+    private static final String LOG_TAG = "NewsUpdateService";
     private Disposable downloadDisposable;
-    private NewsItemRepository newsItemRepository;
+    private NewsItemRepository newsRepository;
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        Log.d(LOG_TAG, "onBind");
+        return null;
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        newsItemRepository = new NewsItemRepository(getApplicationContext());
-        Notification notification = new ForegroundNotificationBuilder(this).build();
+        Log.d(LOG_TAG, "onCreate");
+        Notification notification = NotificationBuilder.createForegroundNotification(this);
         startForeground(1, notification);
+        newsRepository = new NewsItemRepository(this.getApplicationContext());
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d(LOG_TAG, "onStartCommand");
+
         if (atLeastNougat()) {
             downloadDisposable = RestApi.getInstance()
                     .getNewsService()
-                    .searchNews("home")
+                    .searchNews("home") // TODO create enum
                     .map(response -> ConverterDtoToDb.map(response.getNews()))
-                    .flatMapCompletable(newsEntities -> newsItemRepository.saveNewsToDb(newsEntities))
+                    .flatMapCompletable(newsEntities -> newsRepository.saveNewsToDb(newsEntities))
                     .subscribeOn(Schedulers.io())
                     .observeOn(Schedulers.io())
                     .subscribe(new Action() {
                         @Override
                         public void run() throws Exception {
-                            Service service = NewsUpdateService.this;
-                            ResultNotificationBuilder notification = new ResultNotificationBuilder(
-                                    service);
-                            notification.show(service.getString(
-                                    R.string.notification_success_text));
-                            service.stopSelf();
+                            NotificationBuilder.showResultNotification(NewsUpdateService.this,
+                                    NewsUpdateService.this.getString(R.string.notification_success_text));
+                            NewsUpdateService.this.stopSelf();
                         }
                     }, new Consumer<Throwable>() {
                         @Override
                         public void accept(Throwable throwable) throws Exception {
-                            Service service = NewsUpdateService.this;
-                            ResultNotificationBuilder notification = new ResultNotificationBuilder(
-                                    service);
-                            notification.show(throwable.getClass().getSimpleName());
-                            service.stopSelf();
+                            NotificationBuilder.showResultNotification(NewsUpdateService.this,
+                                    throwable.getClass().getSimpleName());
+                            NewsUpdateService.this.stopSelf();
                         }
                     });
+        } else {
+            NewsUpdateService.this.stopSelf();
         }
-        this.stopSelf();
         return START_STICKY;
-    }
-
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
     }
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
+        Log.d(LOG_TAG, "onDestroy");
         if (downloadDisposable != null && !downloadDisposable.isDisposed()) {
             downloadDisposable.dispose();
         }
@@ -87,8 +88,6 @@ public class NewsUpdateService extends Service {
 
     public static void start(Context context) {
         Intent intent = new Intent(context, NewsUpdateService.class);
-
-        // We separate service starting due to android SDK restrictions comes from OREO (API 26)
         if (atLeastOreo()) {
             context.startForegroundService(intent);
         } else {

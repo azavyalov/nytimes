@@ -73,7 +73,7 @@ public class NewsListFragment extends Fragment {
         compositeDisposable = new CompositeDisposable();
         newsItemRepository = new NewsItemRepository(getActivity());
 
-        storeNewsFromApiToDb();
+        /*storeNewsFromApiToDb();*/
     }
 
     @Nullable
