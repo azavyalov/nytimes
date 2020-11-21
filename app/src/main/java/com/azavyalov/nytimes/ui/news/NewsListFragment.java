@@ -73,6 +73,7 @@ public class NewsListFragment extends Fragment {
         Log.d("NewsListTag", "Call onCreate");
         compositeDisposable = new CompositeDisposable();
         newsItemRepository = new NewsItemRepository(getActivity());
+        storeNewsFromApiToDb();
     }
 
     @Nullable
