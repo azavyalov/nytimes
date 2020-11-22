@@ -46,12 +46,6 @@ public class MainActivity extends AppCompatActivity implements FragmentActionLis
     }
 
     @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
-    }
-
-    @Override
     public void onNewsSelected(NewsItem newsItem) {
         openNewsDetailsFragment(newsItem.getId());
     }
@@ -62,7 +56,6 @@ public class MainActivity extends AppCompatActivity implements FragmentActionLis
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.list_container, newsListFragment, TAG_NEWS_LIST_FRAGMENT)
-                .addToBackStack(null)
                 .commit();
     }
 
