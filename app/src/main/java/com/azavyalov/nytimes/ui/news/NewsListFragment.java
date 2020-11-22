@@ -40,6 +40,8 @@ import static com.azavyalov.nytimes.util.Util.setVisibility;
 
 public class NewsListFragment extends Fragment {
 
+    private static final String LOG_TAG = "NewsListTag";
+
     @Nullable
     private RecyclerView recycler;
     @Nullable
@@ -70,7 +72,7 @@ public class NewsListFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("NewsListTag", "Call onCreate");
+        Log.d(LOG_TAG, "Call onCreate");
         compositeDisposable = new CompositeDisposable();
         newsItemRepository = new NewsItemRepository(getActivity());
         storeNewsFromApiToDb();
@@ -80,7 +82,7 @@ public class NewsListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        Log.d("NewsListTag", "Call onCreateView");
+        Log.d(LOG_TAG, "Call onCreateView");
         View view = inflater.inflate(R.layout.news_list_fragment, container, false);
 
         findViews(view);
@@ -93,20 +95,20 @@ public class NewsListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.d("NewsListTag", "Call onResume");
+        Log.d(LOG_TAG, "Call onResume");
         subscribeToNewsFromDb();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        Log.d("NewsListTag", "Call onStop");
+        Log.d(LOG_TAG, "Call onStop");
         compositeDisposable.clear();
     }
 
     @Override
     public void onDestroy() {
-        Log.d("NewsListTag", "Call onDestroy");
+        Log.d(LOG_TAG, "Call onDestroy");
         super.onDestroy();
         disposeSafe(compositeDisposable);
     }
@@ -147,7 +149,7 @@ public class NewsListFragment extends Fragment {
 
     private void storeNewsFromApiToDb() {
         showState(LOADING);
-        Log.d("NewsListTag", "Store news from API to DB");
+        Log.d(LOG_TAG, "Store news from API to DB");
         Disposable disposable = RestApi.getInstance()
                 .getNewsService()
                 .searchNews(HOME.toString())
@@ -161,7 +163,7 @@ public class NewsListFragment extends Fragment {
 
     private void subscribeToNewsFromDb() {
         showState(LOADING);
-        Log.d("NewsListTag", "Subscribe to news from DB");
+        Log.d(LOG_TAG, "Subscribe to news from DB");
         Disposable disposable = newsItemRepository
                 .getNewsFromDb()
                 .map(newsEntities -> ConverterDbToNewsItem.map(newsEntities))

@@ -32,6 +32,9 @@ import io.reactivex.schedulers.Schedulers;
 
 public class NewsDetailsFragment extends Fragment {
 
+    private static final String NEWS_ITEM_ID_EXTRA = "extra:newsId";
+    private static final String LOG_TAG = "NewsDetailsTag";
+
     private ImageView imageView;
     private TextView titleView;
     private TextView dateView;
@@ -44,8 +47,6 @@ public class NewsDetailsFragment extends Fragment {
     private NewsItemRepository newsItemRepository;
     private NewsEntity mNewsEntity;
     private int newsId;
-
-    private static final String NEWS_ITEM_ID_EXTRA = "extra:newsId";
 
     public static NewsDetailsFragment newInstance(int newsId) {
         NewsDetailsFragment detailsFragment = new NewsDetailsFragment();
@@ -67,7 +68,7 @@ public class NewsDetailsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        Log.d("NewsDetailsTag", "Call onCreateView");
+        Log.d(LOG_TAG, "Call onCreateView");
         View view = inflater.inflate(R.layout.news_details_fragment, container, false);
 
         activity = getActivity();
@@ -79,14 +80,14 @@ public class NewsDetailsFragment extends Fragment {
 
     @Override
     public void onStop() {
-        Log.d("NewsDetailsTag", "Call onStop");
+        Log.d(LOG_TAG, "Call onStop");
         super.onStop();
         compositeDisposable.clear();
     }
 
     @Override
     public void onDestroy() {
-        Log.d("NewsDetailsTag", "Call onDestroy");
+        Log.d(LOG_TAG, "Call onDestroy");
         super.onDestroy();
         Util.disposeSafe(compositeDisposable);
     }
@@ -101,7 +102,7 @@ public class NewsDetailsFragment extends Fragment {
     }
 
     private void loadNewsItemFromDb(int id) {
-        Log.d("NewsDetailsTag", "Load news item from DB");
+        Log.d(LOG_TAG, "Load news item from DB");
         Disposable disposable = newsItemRepository
                 .getNewsById(id)
                 .subscribeOn(Schedulers.io())
