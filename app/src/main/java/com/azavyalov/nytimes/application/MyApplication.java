@@ -54,13 +54,13 @@ public class MyApplication extends Application {
         PeriodicWorkRequest workRequest = new PeriodicWorkRequest.Builder(
                 NewsUpdateWork.class, REPEAT_INTERVAL, TimeUnit.MINUTES)
                 .setInitialDelay(INITIAL_DELAY, TimeUnit.MINUTES)
-                .setConstraints(constraints)
+                //.setConstraints(constraints)
                 .build();
 
         Log.d(LOG_TAG, "Executing news updating work");
         WorkManager.getInstance(this).enqueueUniquePeriodicWork(
                 "NewsUpdatingWork",
-                ExistingPeriodicWorkPolicy.KEEP,
+                ExistingPeriodicWorkPolicy.REPLACE,
                 workRequest);
     }
 }
