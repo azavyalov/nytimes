@@ -25,7 +25,7 @@ import static com.azavyalov.nytimes.util.VersionUtils.atLeastOreo;
 
 public class NewsUpdateService extends Service {
 
-    private static final String LOG_TAG = "NewsUpdateService";
+    private static final String LOG_TAG = "NewsUpdateServiceTag";
     private Disposable downloadDisposable;
     private NewsItemRepository newsRepository;
 
