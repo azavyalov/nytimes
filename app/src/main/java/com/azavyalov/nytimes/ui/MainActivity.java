@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.azavyalov.nytimes.R;
 import com.azavyalov.nytimes.data.NewsItem;
-import com.azavyalov.nytimes.ui.about.AboutActivity;
+import com.azavyalov.nytimes.ui.about.AboutActivityMvp;
 import com.azavyalov.nytimes.ui.details.NewsDetailsFragment;
 import com.azavyalov.nytimes.ui.news.NewsListFragment;
 
@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements FragmentActionLis
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.about_activity) {
-            startActivity(new Intent(this, AboutActivity.class));
+            startActivity(new Intent(this, AboutActivityMvp.class));
         }
         return super.onOptionsItemSelected(item);
     }

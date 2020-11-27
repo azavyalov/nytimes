@@ -18,7 +18,7 @@
         <activity android:name=".ui.MainActivity" />
         <activity android:name=".ui.details.NewsDetailsWebViewActivity" />
         <activity
-            android:name=".ui.about.AboutActivity"
+            android:name=".ui.about.AboutActivityMvp"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ui.intro.IntroActivity"
