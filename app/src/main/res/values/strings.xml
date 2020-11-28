@@ -10,6 +10,7 @@
 
     <string name="email_address" translatable="false">alexeysorsa@gmail.com</string>
     <string name="email_subject">Test subject</string>
+    <string name="email_error">Message can not be empty</string>
 
     <string name="about_screen">About</string>
     <string name="about_title">Alexey Zavyalov</string>
@@ -20,6 +21,7 @@
     <string name="telegram_url">https://t.me/azavyalov32</string>
     <string name="instagram_url">https://www.instagram.com/easyrrrider/</string>
     <string name="facebook_url">https://web.facebook.com/profile.php?id=100010080007970</string>
+    <string name="github_url">https://github.com/azavyalov</string>
 
     <string name="about_facebook_description">Facebook image</string>
     <string name="about_instagram_description">Instagram image</string>
