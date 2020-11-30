@@ -1,5 +1,6 @@
 package com.azavyalov.nytimes.network;
 
+import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -43,6 +44,7 @@ public final class RestApi {
         return new OkHttpClient.Builder()
                 .addInterceptor(ApiKeyInterceptor.create(KEY))
                 .addInterceptor(loggingInterceptor)
+                .addNetworkInterceptor(new StethoInterceptor())
                 .connectTimeout(15, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS)

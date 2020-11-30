@@ -13,6 +13,7 @@ import androidx.work.WorkManager;
 
 import com.azavyalov.nytimes.service.NewsUpdateWork;
 import com.azavyalov.nytimes.util.NetworkUtils;
+import com.facebook.stetho.Stetho;
 
 import java.util.concurrent.TimeUnit;
 
@@ -31,10 +32,12 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         Log.d(LOG_TAG, "onCreate");
-
         sMyApplication = this;
+
         registerNetworkReceiver();
         enqueuePeriodicUpdatingWork();
+
+        initStetho();
     }
 
     public static Context getContext() {
@@ -54,7 +57,7 @@ public class MyApplication extends Application {
         PeriodicWorkRequest workRequest = new PeriodicWorkRequest.Builder(
                 NewsUpdateWork.class, REPEAT_INTERVAL, TimeUnit.MINUTES)
                 .setInitialDelay(INITIAL_DELAY, TimeUnit.MINUTES)
-                //.setConstraints(constraints)
+                .setConstraints(constraints)
                 .build();
 
         Log.d(LOG_TAG, "Executing news updating work");
@@ -62,5 +65,23 @@ public class MyApplication extends Application {
                 "NewsUpdatingWork",
                 ExistingPeriodicWorkPolicy.REPLACE,
                 workRequest);
+    }
+
+    private void initStetho() {
+        Stetho.InitializerBuilder initializerBuilder =
+                Stetho.newInitializerBuilder(this);
+
+        // Enable Chrome DevTools
+        initializerBuilder.enableWebKitInspector(
+                Stetho.defaultInspectorModulesProvider(this)
+        );
+
+        // Enable command line interface
+        initializerBuilder.enableDumpapp(
+                Stetho.defaultDumperPluginsProvider(this)
+        )
+        ;
+        Stetho.Initializer initializer = initializerBuilder.build();
+        Stetho.initialize(initializer);
     }
 }
