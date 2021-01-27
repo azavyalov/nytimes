@@ -124,7 +124,7 @@ public class NewsDetailsFragment extends Fragment {
 
         titleView.setText(newsEntity.getTitle());
         textView.setText(newsEntity.getPreviewText());
-        dateView.setText(newsEntity.getPublishDate());
+        dateView.setText(Util.formatDateString(newsEntity.getPublishDate()));
         webViewButton.setOnClickListener(view -> {
             openWebViewActivity(newsEntity.getTextUrl());
         });

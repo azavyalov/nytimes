@@ -6,9 +6,10 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 
-import com.azavyalov.nytimes.BuildConfig;
-
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import io.reactivex.disposables.Disposable;
 
@@ -26,6 +27,21 @@ public final class Util {
                 5 * DAY_IN_MILLIS,
                 FORMAT_ABBREV_RELATIVE
         );
+    }
+
+    public static String formatDateString(String date) {
+        String formattedDate = date.replaceAll("[T]", "");
+        SimpleDateFormat initialFormat = new SimpleDateFormat(
+                "yyyy-MM-ddHH:mm:ss", Locale.getDefault());
+        SimpleDateFormat desiredFormat = new SimpleDateFormat(
+                "yyyy-MM-dd HH:mm", Locale.getDefault());
+        Date newDate = null;
+        try {
+            newDate = initialFormat.parse(formattedDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return desiredFormat.format(newDate);
     }
 
     public static void setVisibility(@Nullable View view, boolean show) {
