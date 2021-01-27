@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.azavyalov.nytimes.R;
 import com.azavyalov.nytimes.data.NewsItem;
+import com.azavyalov.nytimes.util.Util;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
@@ -98,7 +99,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
             categoryView.setText(newsItem.getCategory());
             titleView.setText(newsItem.getTitle());
             previewView.setText(newsItem.getPreviewText());
-            dateView.setText(newsItem.getPublishDate());
+            dateView.setText(Util.formatDateString(newsItem.getPublishDate()));
         }
     }
 }

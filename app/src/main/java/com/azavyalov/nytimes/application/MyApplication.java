@@ -79,8 +79,7 @@ public class MyApplication extends Application {
         // Enable command line interface
         initializerBuilder.enableDumpapp(
                 Stetho.defaultDumperPluginsProvider(this)
-        )
-        ;
+        );
         Stetho.Initializer initializer = initializerBuilder.build();
         Stetho.initialize(initializer);
     }
